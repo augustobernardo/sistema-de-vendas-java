@@ -1,6 +1,6 @@
 # sistema-de-vendas-java
 
-### Ao clonar o repositório, rodar o arquivo main para instalação de dependências listadas no arquivo "pom.xml" 
+## Ao clonar o repositório, rodar o arquivo main para instalação de dependências listadas no arquivo "pom.xml" 
 
 ### Conexão com seu banco de dados (MariaDB / MySQL)
 
