@@ -24,7 +24,7 @@ public class HibernateUtil {
  //essa estratégia é comum em arquiteturas com ampla concorrência a recursos
  private static ThreadLocal<Session> threadLocal = new ThreadLocal<Session>();
  //url do banco de dados
- private static String urlDB = "jdbc:mariadb://MacBook-Air-de-Enrico.local:3306/sistemaVendas?useTimezone=true&serverTimezone=UTC&useBulkStmts=false";
+ private static String urlDB = "*URL DO SEU BANCO DE DADOS*?useTimezone=true&serverTimezone=UTC&useBulkStmts=false";
 
  //execução estática - é executada no momento em que o programa é carregado
  static {
@@ -42,7 +42,7 @@ public class HibernateUtil {
   //usuário do banco
   settings.put("hibernate.connection.username", "root");
   //senha do usuário
-  settings.put("hibernate.connection.password", "Secret777");
+  settings.put("hibernate.connection.password", "");
   //contexto da sessão
   settings.put("hibernate.current_session_context_class", "thread");
   //mostra os comandos SQL ?
