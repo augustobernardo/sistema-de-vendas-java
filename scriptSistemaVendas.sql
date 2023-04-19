@@ -13,8 +13,7 @@ id bigint(20) not null auto_increment,
 primary key (id),
 nomeDoProduto varchar(200) not null,
 valorUnit varchar(200) not null,
-estoque bigint(20) not null,
-sku VARCHAR(250)
+estoque bigint(20) not null
 ) engine=InnoDB;
 
 
