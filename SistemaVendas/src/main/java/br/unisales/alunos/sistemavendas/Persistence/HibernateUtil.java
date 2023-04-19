@@ -1,7 +1,5 @@
 package br.unisales.alunos.sistemavendas.Persistence;
 
-import br.unisales.alunos.sistemavendas.Models.Cliente;
-import br.unisales.alunos.sistemavendas.Models.Produto;
 import br.unisales.alunos.sistemavendas.Models.Venda;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +24,7 @@ public class HibernateUtil {
  //essa estratégia é comum em arquiteturas com ampla concorrência a recursos
  private static ThreadLocal<Session> threadLocal = new ThreadLocal<Session>();
  //url do banco de dados
- private static String urlDB = "jdbc:mariadb://MacBook-Air-de-Enrico.local:3306/minhabase?useTimezone=true&serverTimezone=UTC&useBulkStmts=false";
+ private static String urlDB = "jdbc:mariadb://MacBook-Air-de-Enrico.local:3306/sistemaVendas?useTimezone=true&serverTimezone=UTC&useBulkStmts=false";
 
  //execução estática - é executada no momento em que o programa é carregado
  static {
@@ -73,8 +71,6 @@ public class HibernateUtil {
    //adiciona as classes do modelo para verificação do Hibernate / JPA
    //devem estar indicadas aqui todas as classes do sistema que são entidades
    Configuration configuration = new Configuration()
-           .addAnnotatedClass(Cliente.class)
-           .addAnnotatedClass(Produto.class)
            .addAnnotatedClass(Venda.class);
    //indica as propriedades utilizadas
    configuration.setProperties(properties);
