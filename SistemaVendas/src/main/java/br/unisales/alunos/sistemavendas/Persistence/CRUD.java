@@ -9,7 +9,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.List;
 import java.util.Scanner;
-import org.checkerframework.checker.units.qual.s;
 import org.hibernate.Session;
 
 /**
@@ -17,15 +16,17 @@ import org.hibernate.Session;
  * @author enrico.eu
  */
 public class CRUD {
+    Session s = HibernateUtil.getInstance();
+    Scanner sc = new Scanner(System.in);
 
-    public void insert(Session s, Scanner sc) {
+    public void insert() {
         EntityManager em = HibernateUtil.getInstance(); // recupera um gerenciador de entidades
         try {
             System.out.println("Digite o nome do cliente:");
-            String nomeCliente = sc.next();
+            String nomeCliente = sc.nextLine();
 
             System.out.println("Digite o nome do produto:");
-            String nomeProduto = sc.next();
+            String nomeProduto = sc.nextLine();
 
             System.out.println("Preço do " + nomeProduto + " ?");
             String preco = sc.next();
@@ -40,7 +41,10 @@ public class CRUD {
             em.persist(v); // insere no banco
             em.getTransaction().commit(); // comita a transação
 
-            System.out.println("Adicionado com sucesso!");
+            System.out.println("""
+                               \n------------------------------
+                               Venda adicionada com sucesso
+                               ------------------------------\n""");
 
         } catch (Exception ex) {
             em.getTransaction().rollback(); // invalida a transação
@@ -49,7 +53,7 @@ public class CRUD {
         em.close(); // fecha o gerenciador
     }
 
-    public void select(Session s) {
+    public void select() {
         //lista pessoas usando query JPQL
         List<Venda> listaVenda = s.createQuery("select V from Venda V order by V.nomeCliente", Venda.class).getResultList();
         //percorre a lista de pesoas
@@ -58,7 +62,7 @@ public class CRUD {
         }
     }
 
-    public void update(Session s, Scanner sc) {
+    public void update() {
         System.out.println("Digite o id da venda:");
         Long id = sc.nextLong();
         Venda venda = s.find(Venda.class, id);
@@ -86,69 +90,76 @@ public class CRUD {
             s.getTransaction().begin();  //inicia a transação
 
             switch (optUpdate) {
-                case 1:
+                case 1 -> {
                     System.out.println("Digite o novo nome do cliente:");
-                    String nomeClienteUpdate = sc.next();
+                    String nomeClienteUpdate = sc.nextLine();
 
                     venda.setNomeCliente(nomeClienteUpdate);
-                    break;
-                case 2:
-                    System.out.println("Digite o novo produto:");
-                    String nomeProdutoUpdate = sc.next();
+                }
+                case 2 -> {
+                    System.out.println("Digite o nome do produto para o qual deseja alterar:");
+                    String nomeProdutoUpdate = sc.nextLine();
 
                     venda.setNomeProduto(nomeProdutoUpdate);
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     System.out.println("Novo preço para " + venda.getPrecoProduto() + ": ");
                     String p = sc.next();
                     double precoProdutoUpdate = Double.parseDouble(p.replace(",", "."));
 
                     venda.setPrecoProduto(precoProdutoUpdate);
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     System.out.println("Para qual quantidade vendida deseja alterar?");
                     int quantidadeVendidaUpdate = sc.nextInt();
 
                     venda.setQuantidadeVendida(quantidadeVendidaUpdate);
-                    break;
+                }
             }
 
             s.persist(venda);
             s.getTransaction().commit();//confirma a transação
+            System.out.println("""
+                               \n------------------------------
+                               Venda atualizada com sucesso
+                               ------------------------------\n""");
         } while (optUpdate != 0);
     }
-    
-    
-    public void delete(Session s, Scanner sc) {
+
+    public void delete() {
         s.getTransaction().begin();//inicia a transação
-     System.out.println("digite o id da pessoa");
-     Long ide = sc.nextLong();
-     //seleciona uma pessoa pelo id
-     //indicada a classe para pesquisa - Pessoa.class
-     Venda vd = s.find(Venda.class, ide);
-     s.remove(vd);//exclui no banco
-     s.getTransaction().commit();//confirma a transação
+        System.out.println("Digite o id da venda");
+        Long ide = sc.nextLong();
+        //seleciona uma pessoa pelo id
+        //indicada a classe para pesquisa - Pessoa.class
+        Venda vd = s.find(Venda.class, ide);
+        s.remove(vd);//exclui no banco
+        s.getTransaction().commit();//confirma a transação
+        
+        System.out.println("""
+                               \n------------------------------
+                               Venda removida com sucesso
+                               ------------------------------\n""");
     }
-    
-    
-    public void search(Session s, Scanner sc) {
-        System.out.println("Digite do cliente para listar suas vendas para o mesmo:");
-                    String inicio = sc.next();
-                    //cria uma Query com parâmetro
-                    //observe que o parâmetro é iniciado com dois pontos ':'
-                    Query q = s.createQuery("select V from Venda V where V.nomeCliente like :nome order by V.nomeProduto", Venda.class);
-                    //indica nominalmente o valor do parâmetro antes da execução da instrução SQL
-                    q.setParameter("nome", inicio + "%");
-                    //executa a instrução SQL
-                    List<Venda> listaVendas = q.getResultList();
-                    //percorre a lista de pessoas
-                    System.out.println("Abaixo encontra-se a lista de produtos vendidos para " + listaVendas.get(0).getNomeCliente() + " :");
-                    for (Venda vl : listaVendas) {
-                        System.out.println("Id(" + vl.getId() + ") - "
-                                + vl.getNomeProduto()
-                                + "(quantidade: " + vl.getQuantidadeVendida() + ") "
-                                + " - Total da compra: R$" + vl.getTotalVenda());
-                    }
+
+    public void search() {
+        System.out.println("Digite o nome do cliente para listar as vendas efetuadas para o mesmo:");
+        String inicio = sc.nextLine();
+        //cria uma Query com parâmetro
+        //observe que o parâmetro é iniciado com dois pontos ':'
+        Query q = s.createQuery("select V from Venda V where V.nomeCliente like :nome order by V.nomeProduto", Venda.class);
+        //indica nominalmente o valor do parâmetro antes da execução da instrução SQL
+        q.setParameter("nome", inicio + "%");
+        //executa a instrução SQL
+        List<Venda> listaVendas = q.getResultList();
+        //percorre a lista de pessoas
+        System.out.println("Abaixo encontra-se a lista de produtos vendidos para " + listaVendas.get(0).getNomeCliente() + " :");
+        for (Venda vl : listaVendas) {
+            System.out.println("Id(" + vl.getId() + ") - "
+                    + vl.getNomeProduto()
+                    + "(quantidade: " + vl.getQuantidadeVendida() + ") "
+                    + " - Total da compra: R$" + vl.getTotalVenda());
+        }
     }
 
 }
