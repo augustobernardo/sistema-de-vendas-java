@@ -63,7 +63,12 @@ public class CRUD {
         System.out.println("Digite o id da venda:");
         Long id = scanner.nextLong(); 
         Venda venda = session.find(Venda.class, id);
-        if (venda != null){
+        
+        if (venda == null){
+            System.out.println("\nVenda não encontrada!\n");
+            return;
+        }
+        
             int optUpdate = 0; 
             do {
                 String label = "";
@@ -122,8 +127,7 @@ public class CRUD {
                                 ------------------------------""");
                     System.out.println(e.getLocalizedMessage()); 
                 } 
-            } while (optUpdate != 0);
-        } else System.out.println("\nVenda não encontrada!\n");
+            } while (optUpdate != 0); 
     }
 
     public void delete() {
